@@ -7,7 +7,7 @@ const port = process.env.PORT || 4000
 const app = express();
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp({
+firebase.initializeApp( {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
   projectId: process.env.PROJECT_ID
@@ -27,6 +27,7 @@ app.post("/createuser", async (req, res) => {
     playlists: req.body.playlists,
     socials: req.body.socials,
     swipers: [],
+    swiped: [],
     matches: [],
   });
 });
@@ -65,9 +66,11 @@ app.post("/swiperight", async (req, res) => {
 app.post("/cards", async (req, res) => {
   var swiper = req.body.swiper;
   var cards = [];
-  var docRef = await db.collection("users").get();
-  docRef.forEach(doc => {
-    if (swiper != doc.id) {
+  var docRef = db.collection("users");
+  var users = await docRef.get();
+  var user = await docRef.doc(swiper).get();
+  users.forEach(doc => {
+    if (swiper != doc.id && !user.data().swiped.includes(doc.id)) {
       console.log(doc.data());
       doc.data().playlists.filter(p => p).forEach(p => cards.push({
         id: doc.id,
