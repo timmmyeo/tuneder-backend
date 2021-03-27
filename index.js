@@ -109,7 +109,7 @@ app.post("/matches", async (req, res) => {
       instagram: info.data().socials.instagram
     });
   });
-  res.send(user.data().matches);
+  res.send(matches);
 });
 
 app.listen(port, () => console.log("Listening..."));
