@@ -59,10 +59,12 @@ app.post("/cards", async (req, res) => {
   docRef.forEach(doc => {
     if (swiper != doc.id) {
       console.log(doc.data());
-      cards.push(doc.data().playlists);
+      doc.data().playlists.filter(p => p).forEach(p => cards.push({
+        id: doc.id,
+        playlist: p
+      }));
     }
   });
-  cards = cards.flat().filter(n => n);
   shuffle(cards);
   res.send(cards);
 });
