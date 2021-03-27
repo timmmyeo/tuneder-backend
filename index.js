@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const firebase = require("firebase");
-const firebaseConfig = require("./firebaseConfig");
+// const firebaseConfig = require("./firebaseConfig");
 const port = process.env.PORT || 4000
 
 const app = express();
