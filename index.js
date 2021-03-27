@@ -70,9 +70,9 @@ app.post("/cards", async (req, res) => {
   var users = await docRef.get();
   var user = await docRef.doc(swiper).get();
   users.forEach(doc => {
-    if (swiper != doc.id && !user.data().swiped.includes(doc.id)) {
+    if (swiper != doc.id) {
       console.log(doc.data());
-      doc.data().playlists.filter(p => p).forEach(p => cards.push({
+      doc.data().playlists.filter(p => p && !user.data().swiped.includes(p)).forEach(p => cards.push({
         id: doc.id,
         playlist: p
       }));
