@@ -8,9 +8,9 @@ const app = express();
 
 // Initialize Cloud Firestore through Firebase
 firebase.initializeApp({
-  apiKey: API_KEY,
-  authDomain: AUTH_DOMAIN,
-  projectId: PROJECT_ID
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID
 });
 
 var db = firebase.firestore();
