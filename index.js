@@ -39,6 +39,9 @@ app.post("/swiperight", async (req, res) => {
     swipers: firebase.firestore.FieldValue.arrayUnion(swiper)
   });
   docRef = db.collection("users").doc(swiper); 
+  docRef.update({
+    swiped: firebase.firestore.FieldValue.arrayUnion(swipee)
+  });
   user = await docRef.get();
   if (user.data().swipers.includes(swipee)) {
     docRef.update({
@@ -48,8 +51,15 @@ app.post("/swiperight", async (req, res) => {
     docRef.update({
       matches: firebase.firestore.FieldValue.arrayUnion(swiper)
     })
+    res.send({
+      match: false
+    });
   }
-  res.send("yo");
+  res.send({
+    match: true,
+    id: user.id,
+    name: user.data().name
+  });
 });
 
 app.post("/cards", async (req, res) => {
