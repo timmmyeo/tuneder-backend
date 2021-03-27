@@ -6,7 +6,11 @@ const firebaseConfig = require("./firebaseConfig");
 const app = express();
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp({
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID
+});
 
 var db = firebase.firestore();
 
