@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const firebase = require("firebase");
 const firebaseConfig = require("./firebaseConfig");
+const port = process.env.PORT || 4000
 
 const app = express();
 
@@ -79,4 +80,4 @@ app.post("/compatability", async (req, res) => {
   });
 })
 
-app.listen(4000, () => console.log("Listening..."));
+app.listen(port, () => console.log("Listening..."));
