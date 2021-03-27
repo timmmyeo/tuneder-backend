@@ -1,17 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 const firebase = require("firebase");
-// const firebaseConfig = require("./firebaseConfig");
+const firebaseConfig = require("./firebaseConfig");
 const port = process.env.PORT || 4000
 
 const app = express();
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp( {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID
-});
+firebase.initializeApp(firebaseConfig 
+//  {
+//  apiKey: process.env.API_KEY,
+//  authDomain: process.env.AUTH_DOMAIN,
+//  projectId: process.env.PROJECT_ID
+//  }
+);
 
 var db = firebase.firestore();
 
@@ -101,14 +103,14 @@ app.post("/matches", async (req, res) => {
   var swiper = req.body.swiper;
   var user = await db.collection("users").doc(swiper).get();
   var matches = [];
-  user.data().matches.forEach(async match => {
+  for (const match of user.data().matches) {
     var info = await db.collection("users").doc(match).get();
     matches.push({
       name: info.data().name,
       facebook: info.data().socials.facebook,
       instagram: info.data().socials.instagram
     });
-  });
+  }
   res.send(matches);
 });
 
