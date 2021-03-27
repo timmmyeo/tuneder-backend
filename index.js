@@ -1,19 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 const firebase = require("firebase");
-const firebaseConfig = require("./firebaseConfig");
+// const firebaseConfig = require("./firebaseConfig");
 const port = process.env.PORT || 4000
 
 const app = express();
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp(firebaseConfig 
-//  {
-//  apiKey: process.env.API_KEY,
-//  authDomain: process.env.AUTH_DOMAIN,
-//  projectId: process.env.PROJECT_ID
-//  }
-);
+firebase.initializeApp({
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID
+});
 
 var db = firebase.firestore();
 
