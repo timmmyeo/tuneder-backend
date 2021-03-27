@@ -95,7 +95,22 @@ app.post("/compatability", async (req, res) => {
       score = max(score, newscore);
     })
   });
-})
+});
+
+app.post("/matches", async (req, res) => {
+  var swiper = req.body.swiper;
+  var user = await db.collection("users").doc(swiper).get();
+  var matches = [];
+  user.data().matches.forEach(async match => {
+    var info = await db.collection("users").doc(match).get();
+    matches.push({
+      name: info.data().name,
+      facebook: info.data().socials.facebook,
+      instagram: info.data().socials.instagram
+    });
+  });
+  res.send(user.data().matches);
+});
 
 app.listen(port, () => console.log("Listening..."));
 
