@@ -53,14 +53,14 @@ app.post("/swiperight", async (req, res) => {
       matches: firebase.firestore.FieldValue.arrayUnion(swiper)
     })
     res.send({
-      match: false
+      match: true,
+      id: user.id,
+      name: user.data().name
     });
   }
-  res.send({
-    match: true,
-    id: user.id,
-    name: user.data().name
-  });
+    res.send({
+      match: false
+    });
 });
 
 app.post("/cards", async (req, res) => {
