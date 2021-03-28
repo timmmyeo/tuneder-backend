@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send("IC HELLO WORLD"));
 
-app.post("/createuser", cors(corsOption), async (req, res) => {
+app.post("/createuser", async (req, res) => {
   var docRef = db.collection("users").doc(req.body.id);
   await docRef.set({
     name: req.body.name,
