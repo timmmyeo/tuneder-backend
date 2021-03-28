@@ -25,7 +25,6 @@ app.post("/createuser", async (req, res) => {
   await docRef.set({
     name: req.body.name,
     playlists: req.body.playlists,
-    socials: req.body.socials,
     swipers: [],
     swiped: [],
     matches: [],
@@ -147,15 +146,6 @@ function createChat(user1, user2) {
   var ref = db.collection("chats");
   ref.add({
     participants: participants,
-    messages: [{
-      sender: user1,
-      message: "Hello!"
-    },{
-      sender: user2,
-      message: "Hey!"
-    },{
-      sender: user1,
-      message: "How are you?"
-    }]
+    messages: []
   })
 }
