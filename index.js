@@ -113,8 +113,6 @@ app.post("/matches", async (req, res) => {
     matches.push({
       id: info.id,
       name: info.data().name,
-      facebook: info.data().socials.facebook,
-      instagram: info.data().socials.instagram
     });
   }
   res.send(matches);
