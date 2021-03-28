@@ -15,18 +15,31 @@ firebase.initializeApp({
 
 var db = firebase.firestore();
 
-app.use(cors(corsOptions));
+let whitelist = ["http://localhost:3000", "https://tuneder.netlify.app/"];
 
-var corsOptions = {
-    origin: ['http://localhost:3000', 'https://easytalkchat.netlify.app'],
-    credentials: true,
+const corsOption = {
+  origin: (origin, callback) => {
+    const originIsWhitelisted = whitelist.indexOf(origin) != -1;
+    console.error(whitelist)
+    console.error(origin)
+    callback(originIsWhitelisted ? null : "Bad Request", originIsWhitelisted);
+  }
 };
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.use(express.json());
 
-app.get("/", (req, res) => res.send("IC HELLO WORLD"));
+app.get("/", cors(corsOption), (req, res) => res.send("IC HELLO WORLD"));
 
-app.post("/createuser", async (req, res) => {
+app.post("/createuser", cors(corsOption), async (req, res) => {
   var docRef = db.collection("users").doc(req.body.id);
   await docRef.set({
     name: req.body.name,
@@ -37,7 +50,7 @@ app.post("/createuser", async (req, res) => {
   });
 });
 
-app.post("/swiperight", async (req, res) => {
+app.post("/swiperight", cors(corsOption), async (req, res) => {
   var swiper = req.body.swiper;
   var swipee = req.body.swipee; 
   var playlist = req.body.playlist;
@@ -77,7 +90,7 @@ app.post("/swiperight", async (req, res) => {
   }
 });
 
-app.post("/cards", async (req, res) => {
+app.post("/cards", cors(corsOption), async (req, res) => {
   var swiper = req.body.swiper;
   var cards = [];
   var docRef = db.collection("users");
@@ -95,7 +108,7 @@ app.post("/cards", async (req, res) => {
   res.send(cards);
 });
 
-app.post("/compatability", async (req, res) => {
+app.post("/compatability", cors(corsOption), async (req, res) => {
   var swiper = req.body.swiper;
   var swipee = req.body.swipee;
   var swiperPlaylists = await db.collection("users").doc(swiper).get();
@@ -110,7 +123,7 @@ app.post("/compatability", async (req, res) => {
   });
 });
 
-app.post("/matches", async (req, res) => {
+app.post("/matches", cors(corsOption), async (req, res) => {
   var swiper = req.body.swiper;
   var user = await db.collection("users").doc(swiper).get();
   var matches = [];
