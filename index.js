@@ -50,7 +50,9 @@ app.post("/swiperight", async (req, res) => {
   });
   user = await docRef.get();
   if (user.data().swipers.includes(swipee)) {
-    createChat(swiper, swipee);
+    if (!user.data().matches.includes(swipee)) {
+      createChat(swiper, swipee);
+    }
     docRef.update({
       matches: firebase.firestore.FieldValue.arrayUnion(swipee)
     })
@@ -114,6 +116,7 @@ app.post("/matches", async (req, res) => {
   for (const match of user.data().matches) {
     var info = await db.collection("users").doc(match).get();
     matches.push({
+      id: info.id,
       name: info.data().name,
       facebook: info.data().socials.facebook,
       instagram: info.data().socials.instagram
