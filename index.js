@@ -1,17 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 const firebase = require("firebase");
-// const firebaseConfig = require("./firebaseConfig");
+const firebaseConfig = require("./firebaseConfig");
 const port = process.env.PORT || 4000
 
 const app = express();
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp({
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID
-});
+firebase.initializeApp(firebaseConfig
+//  {
+//  apiKey: process.env.API_KEY,
+//  authDomain: process.env.AUTH_DOMAIN,
+//  projectId: process.env.PROJECT_ID
+//  }
+);
 
 var db = firebase.firestore();
 
@@ -35,13 +37,18 @@ app.post("/createuser", async (req, res) => {
 app.post("/swiperight", async (req, res) => {
   var swiper = req.body.swiper;
   var swipee = req.body.swipee; 
+  var playlist = req.body.playlist;
   var docRef = db.collection("users").doc(swipee);
   docRef.update({
     swipers: firebase.firestore.FieldValue.arrayUnion(swiper)
   });
   docRef = db.collection("users").doc(swiper); 
+  console.log("hi");
   docRef.update({
-    swiped: firebase.firestore.FieldValue.arrayUnion(swipee)
+    swiped: firebase.firestore.FieldValue.arrayUnion({
+      user: swipee,
+      playlist: playlist,
+    })
   });
   user = await docRef.get();
   if (user.data().swipers.includes(swipee)) {
@@ -58,9 +65,9 @@ app.post("/swiperight", async (req, res) => {
       name: user.data().name
     });
   }
-    res.send({
-      match: false
-    });
+  res.send({
+    match: false
+  });
 });
 
 app.post("/cards", async (req, res) => {
@@ -69,10 +76,14 @@ app.post("/cards", async (req, res) => {
   var docRef = db.collection("users");
   var users = await docRef.get();
   var user = await docRef.doc(swiper).get();
+  console.log(user.data().swiped);
   users.forEach(doc => {
     if (swiper != doc.id) {
       console.log(doc.data());
-      doc.data().playlists.filter(p => p && !user.data().swiped.includes(p)).forEach(p => cards.push({
+      doc.data().playlists.filter(p => (p && !user.data().swiped.includes({
+        user: doc.id,
+        playlist: p
+      }))).forEach(p => cards.push({
         id: doc.id,
         playlist: p
       }));
