@@ -1,19 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 const firebase = require("firebase");
-const firebaseConfig = require("./firebaseConfig");
+// const firebaseConfig = require("./firebaseConfig");
 const port = process.env.PORT || 4000
 
 const app = express();
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp(firebaseConfig
-//  {
-//  apiKey: process.env.API_KEY,
-//  authDomain: process.env.AUTH_DOMAIN,
-//  projectId: process.env.PROJECT_ID
-//  }
-);
+firebase.initializeApp({
+ apiKey: process.env.API_KEY,
+ authDomain: process.env.AUTH_DOMAIN,
+ projectId: process.env.PROJECT_ID
+});
 
 var db = firebase.firestore();
 
@@ -52,6 +50,7 @@ app.post("/swiperight", async (req, res) => {
   });
   user = await docRef.get();
   if (user.data().swipers.includes(swipee)) {
+    createChat(swiper, swipee);
     docRef.update({
       matches: firebase.firestore.FieldValue.arrayUnion(swipee)
     })
@@ -142,4 +141,22 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function createChat(user1, user2) {
+  var participants = [user1, user2];
+  var ref = db.collection("chats");
+  ref.add({
+    participants: participants,
+    messages: [{
+      sender: user1,
+      message: "Hello!"
+    },{
+      sender: user2,
+      message: "Hey!"
+    },{
+      sender: user1,
+      message: "How are you?"
+    }]
+  })
 }
